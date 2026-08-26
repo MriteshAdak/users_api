@@ -1,0 +1,26 @@
+services:
+  user_api:
+    build: .
+    ports:
+      - "${USER_API_PORT:-8081}:8081"
+    volumes:
+      - ./user_api:/app/user_api
+    environment:
+      # External PostgreSQL only; this compose file never creates a database.
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL to an externally provided PostgreSQL connection URL}
+      USER_API_DB_SCHEMA: ${USER_API_DB_SCHEMA:-user_api}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET to the shared local HS256 signing secret}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:-15}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    command: ["uvicorn", "user_api.main:app", "--host", "0.0.0.0", "--port", "8081", "--reload"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    name: shared_net
+    external: true
