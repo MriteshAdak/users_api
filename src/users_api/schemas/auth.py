@@ -1,7 +1,7 @@
 """Pydantic schemas for local authentication requests and responses."""
 
 from pydantic import BaseModel, Field
-
+from uuid import UUID
 
 class LoginRequest(BaseModel):
     """Username and password submitted to obtain an access token."""
@@ -16,3 +16,9 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_in: int
+
+class TokenClaims(BaseModel):
+    """Claims required from a validated local access token."""
+
+    sub: UUID
+    username: str | None = None
