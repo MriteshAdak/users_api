@@ -11,4 +11,4 @@ RUN pip install --no-cache-dir -e .
 
 EXPOSE 8081
     
-CMD ["uvicorn", "users_api.main:app", "--host", "0.0.0.0", "--port", "8081"]
+CMD ["uvicorn", "src.users_api.main:app", "--host", "0.0.0.0", "--port", "8081"]
