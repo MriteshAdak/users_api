@@ -1,6 +1,6 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool, text
+from sqlalchemy import Connection, engine_from_config, pool, text
 
 from alembic import context
 
@@ -30,7 +30,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-def ensure_schema(connection) -> None:
+def ensure_schema(connection: Connection) -> None:
     """Ensure the schema exists in the database."""
     connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {settings.database_schema}"))
     connection.commit()
