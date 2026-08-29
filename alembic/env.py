@@ -30,6 +30,12 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+def include_name(name: str, type_: str, parent_names: list[str]) -> bool | str:
+    """Include only the specified schema in the migration."""
+    if type_ == "schema":
+        return name == settings.database_schema
+    return True
+
 def ensure_schema(connection: Connection) -> None:
     """Ensure the schema exists in the database."""
     connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {settings.database_schema}"))
@@ -52,6 +58,7 @@ def run_migrations_offline() -> None:
         url=url,
         target_metadata=target_metadata,
         include_schemas=True,
+        include_name=include_name,
         version_table_schema=settings.database_schema,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -80,6 +87,7 @@ def run_migrations_online() -> None:
             connection=connection,
             target_metadata=target_metadata,
             include_schemas=True,
+            include_name=include_name,
             version_table_schema=settings.database_schema,
         )
 
