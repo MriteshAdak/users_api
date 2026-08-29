@@ -11,8 +11,8 @@ from src.users_api.models import Base
 # access to the values within the .ini file in use.
 config = context.config
 settings = get_settings()
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL) #type: ignore
-config.set_main_option("database.schema", settings.USER_API_DB_SCHEMA) #type: ignore
+config.set_main_option("sqlalchemy.url", settings.database_url)
+config.set_main_option("database.schema", settings.database_schema)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -30,6 +30,10 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+def ensure_schema(connection) -> None:
+    """Ensure the schema exists in the database."""
+    connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {settings.database_schema}"))
+    connection.commit()
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
