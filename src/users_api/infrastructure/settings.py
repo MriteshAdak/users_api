@@ -1,9 +1,12 @@
 """Database configuration owned by :mod:`users_api`."""
 
-from dataclasses import dataclass
-from functools import lru_cache
 import os
 import re
+from dataclasses import dataclass
+from functools import lru_cache
+from typing import Self
+
+from dotenv import find_dotenv, load_dotenv
 
 # TODO: Check necessity
 _SCHEMA_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -22,8 +25,11 @@ class Settings:
     log_level: str
 
     @classmethod
-    def from_environment(cls) -> "Settings":
+    def from_environment(cls) -> Self:
         """Load and validate runtime configuration from environment variables."""
+
+        load_dotenv(find_dotenv(".env.local"))
+        load_dotenv(find_dotenv(".env"))
 
         database_url = os.environ.get("DATABASE_URL")
         if not database_url:
